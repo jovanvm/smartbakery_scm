@@ -1,0 +1,21 @@
+{
+  "name": "smartbakery-scm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dashboard SCM sederhana untuk UMKM Roti Nusa.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:seed": "node src/database/seed.js",
+    "db:reset": "node src/database/seed.js --reset"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.24.6"
+  }
+}

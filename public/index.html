@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dashboard ERP SCM untuk UMKM Roti Nusa." />
+    <meta name="theme-color" content="#231F1E" />
+    <title>SmartBakery SCM — Roti Nusa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">RN</div>
+        <div class="brand-copy">
+          <strong>SmartBakery SCM</strong>
+          <span>Roti Nusa · Operasional</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Navigasi utama">
+        <p class="nav-label">Menu SCM</p>
+        <ul class="nav-list">
+          <li>
+            <button type="button" class="nav-item active" data-route="dashboard" aria-current="page">
+              <span class="nav-icon" aria-hidden="true">DB</span>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="inventory">
+              <span class="nav-icon" aria-hidden="true">PB</span>
+              <span>Persediaan</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="suppliers">
+              <span class="nav-icon" aria-hidden="true">SP</span>
+              <span>Pemasok</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="products">
+              <span class="nav-icon" aria-hidden="true">PR</span>
+              <span>Produk &amp; Resep</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="production">
+              <span class="nav-icon" aria-hidden="true">RP</span>
+              <span>Rencana Produksi</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="procurement">
+              <span class="nav-icon" aria-hidden="true">PO</span>
+              <span>Pembelian</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="agent">
+              <span class="nav-icon" aria-hidden="true">AI</span>
+              <span>AI Agent</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-item" data-route="logs">
+              <span class="nav-icon" aria-hidden="true">LA</span>
+              <span>Riwayat Aktivitas</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="footer-dot" aria-hidden="true"></span>
+        MySQL aktif · Tahap 5
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
+
+    <div class="main-wrap">
+      <header class="topbar">
+        <button
+          type="button"
+          class="menu-toggle"
+          id="sidebar-toggle"
+          aria-label="Buka menu navigasi"
+          aria-expanded="false"
+        >
+          <span class="menu-lines" aria-hidden="true"></span>
+        </button>
+
+        <div class="page-heading">
+          <p class="eyebrow" id="breadcrumb">Beranda / Dashboard</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+
+        <div class="topbar-actions">
+          <span class="phase-badge">Tahap 5</span>
+          <div class="user-chip">
+            <span class="avatar" aria-hidden="true">RN</span>
+            <span>Admin Roti Nusa</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="module-section" data-section="dashboard">
+          <div class="section-intro">
+            <div>
+              <h2>Ringkasan Operasional Hari Ini</h2>
+              <p>Pantau stok, rencana produksi, dan purchase order yang perlu ditindaklanjuti.</p>
+            </div>
+            <span class="stage-pill">Tahap 5 — Terhubung API</span>
+          </div>
+
+          <div class="kpi-grid">
+            <article class="kpi-card kpi-blue">
+              <h3>Jenis Bahan Baku</h3>
+              <p class="kpi-value" id="kpi-materials">—</p>
+              <p class="kpi-note">Terdaftar di database</p>
+            </article>
+            <article class="kpi-card kpi-amber">
+              <h3>Bahan Stok Kritis</h3>
+              <p class="kpi-value" id="kpi-critical">—</p>
+              <p class="kpi-note">Stok ≤ stok pengaman</p>
+            </article>
+            <article class="kpi-card kpi-violet">
+              <h3>Rencana Produksi Aktif</h3>
+              <p class="kpi-value" id="kpi-plans">—</p>
+              <p class="kpi-note">DIRANCANG / DRAFT</p>
+            </article>
+            <article class="kpi-card kpi-rose">
+              <h3>PO Perlu Persetujuan</h3>
+              <p class="kpi-value" id="kpi-po">—</p>
+              <p class="kpi-note">Menunggu tinjauan pemilik</p>
+            </article>
+          </div>
+
+          <div class="panel-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Bahan Stok Kritis</h2>
+                <span class="panel-caption">Prioritas pembelian</span>
+              </div>
+              <div class="table-wrap">
+                <table aria-label="Bahan stok kritis">
+                  <thead>
+                    <tr>
+                      <th>Kode</th>
+                      <th>Nama Bahan</th>
+                      <th>Kategori</th>
+                      <th>Stok</th>
+                      <th>Pengaman</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-low-stock"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Purchase Order Terbaru</h2>
+                <span class="panel-caption">Status pembelian</span>
+              </div>
+              <div class="table-wrap">
+                <table aria-label="Purchase order terbaru">
+                  <thead>
+                    <tr>
+                      <th>Nomor PO</th>
+                      <th>Pemasok</th>
+                      <th>Tiba</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-recent-po"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Perbandingan Stok vs Stok Pengaman</h2>
+              <span class="panel-caption">Visualisasi ringkas</span>
+            </div>
+            <div class="stock-chart" id="dashboard-stock-chart"></div>
+          </section>
+
+          <div class="quick-actions">
+            <button type="button" class="button primary" data-route="production">Buat Rencana Produksi</button>
+            <button type="button" class="button secondary" data-route="agent">Tanya AI Agent</button>
+          </div>
+        </section>
+
+        <section class="module-section" data-section="inventory" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Persediaan &amp; Gudang</h2>
+              <p>Kelola bahan baku, status stok, dan riwayat pergerakan gudang.</p>
+            </div>
+            <span class="stage-pill">Tahap 4 — Terhubung API</span>
+          </div>
+
+          <div class="toolbar">
+            <input type="search" id="inventory-search" class="input-control" placeholder="Cari kode atau nama bahan" aria-label="Cari kode atau nama bahan" />
+            <select id="inventory-category" class="input-control" aria-label="Filter kategori bahan">
+              <option value="">Semua kategori</option>
+            </select>
+            <select id="inventory-status" class="input-control" aria-label="Filter status stok">
+              <option value="">Semua status</option>
+              <option value="AMAN">AMAN</option>
+              <option value="PERLU_DIBELI">PERLU_DIBELI</option>
+            </select>
+            <button type="button" class="button primary" id="inventory-add">Tambah Bahan</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Daftar Bahan Baku</h2>
+              <span class="panel-caption" id="inventory-count">0 bahan</span>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Daftar bahan baku">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama Bahan</th>
+                    <th>Kategori</th>
+                    <th>Stok</th>
+                    <th>Pengaman</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Riwayat Pergerakan Stok</h2>
+              <select id="movement-material" class="input-control compact" aria-label="Filter bahan pergerakan stok">
+                <option value="">Semua bahan</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Riwayat pergerakan stok">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Bahan</th>
+                    <th>Jenis</th>
+                    <th>Perubahan</th>
+                    <th>Referensi</th>
+                    <th>Catatan</th>
+                  </tr>
+                </thead>
+                <tbody id="movements-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="module-section" data-section="suppliers" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Pemasok &amp; Penawaran</h2>
+              <p>Kelola data pemasok, penawaran harga, lead time, dan MOQ.</p>
+            </div>
+            <span class="stage-pill">Tahap 4 — Terhubung API</span>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="button primary" id="supplier-add">Tambah Pemasok</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Data Pemasok &amp; Penawaran</h2>
+              <span class="panel-caption" id="supplier-count">0 pemasok</span>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Data pemasok">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Kontak</th>
+                    <th>Status</th>
+                    <th>Penawaran</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="suppliers-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Perbandingan Penawaran</h2>
+              <span class="panel-caption">Diurutkan backend</span>
+            </div>
+            <div class="toolbar toolbar-inside">
+              <select id="compare-material" class="input-control" aria-label="Pilih bahan baku untuk dibandingkan">
+                <option value="">Pilih bahan baku</option>
+              </select>
+              <input type="number" id="compare-days" class="input-control compact" min="0" step="1" value="2" aria-label="Hari hingga kebutuhan" />
+              <input type="number" id="compare-quantity" class="input-control compact" min="0" step="1" value="1" aria-label="Jumlah pembelian" />
+              <button type="button" class="button secondary" id="compare-run">Bandingkan</button>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Perbandingan penawaran">
+                <thead>
+                  <tr>
+                    <th>Peringkat</th>
+                    <th>Pemasok</th>
+                    <th>Harga</th>
+                    <th>Lead Time</th>
+                    <th>MOQ</th>
+                    <th>Tenggat</th>
+                    <th>Estimasi</th>
+                  </tr>
+                </thead>
+                <tbody id="compare-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="module-section" data-section="products" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Produk &amp; Resep</h2>
+              <p>Atur produk jadi dan komposisi bahan per batch produksi.</p>
+            </div>
+            <span class="stage-pill">Tahap 4 — Terhubung API</span>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="button primary" id="product-add">Tambah Produk</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Daftar Produk &amp; Bill of Materials</h2>
+              <span class="panel-caption" id="product-count">0 produk</span>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Daftar produk">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama Produk</th>
+                    <th>Ukuran Batch</th>
+                    <th>Satuan</th>
+                    <th>Komposisi per Batch</th>
+                  </tr>
+                </thead>
+                <tbody id="products-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="module-section" data-section="production" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Rencana Produksi</h2>
+              <p>Susun rencana produksi dan tinjau kebutuhan bahan bakunya.</p>
+            </div>
+            <span class="stage-pill">Tahap 4 — Terhubung API</span>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="button primary" id="plan-add">Buat Rencana Produksi</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Daftar Rencana Produksi</h2>
+              <div class="header-actions">
+                <span class="panel-caption" id="plan-count">0 rencana</span>
+                <button type="button" class="button secondary small" id="analyze-with-agent" data-route="agent">Analisis dengan AI Agent</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Daftar rencana produksi">
+                <thead>
+                  <tr>
+                    <th>No. Rencana</th>
+                    <th>Produk</th>
+                    <th>Jumlah</th>
+                    <th>Tanggal Kebutuhan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="plans-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Kebutuhan Bahan</h2>
+              <span class="panel-caption" id="requirements-caption">Pilih rencana produksi</span>
+            </div>
+            <div id="requirements-summary" class="detail-grid"></div>
+            <div class="table-wrap">
+              <table aria-label="Kebutuhan bahan">
+                <thead>
+                  <tr>
+                    <th>Bahan</th>
+                    <th>Kebutuhan</th>
+                    <th>Stok</th>
+                    <th>Pengaman</th>
+                    <th>PO Masuk</th>
+                    <th>Beli</th>
+                    <th>Status</th>
+                    <th>Rekomendasi Pemasok</th>
+                  </tr>
+                </thead>
+                <tbody id="requirements-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="module-section" data-section="procurement" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Pembelian &amp; Purchase Order</h2>
+              <p>Tinjau draf PO, lalu setujui, batalkan, atau terima barang melalui tombol pengguna.</p>
+            </div>
+            <span class="stage-pill">Tahap 4 — Terhubung API</span>
+          </div>
+
+          <div class="toolbar">
+            <select id="po-status" class="input-control" aria-label="Filter status purchase order">
+              <option value="">Semua status</option>
+              <option value="MENUNGGU_PERSETUJUAN">Menunggu persetujuan</option>
+              <option value="DISETUJUI">Disetujui</option>
+              <option value="DITERIMA">Diterima</option>
+              <option value="DIBATALKAN">Dibatalkan</option>
+            </select>
+          </div>
+
+          <div class="panel-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Daftar Purchase Order</h2>
+                <span class="panel-caption" id="po-count">0 PO</span>
+              </div>
+              <div class="table-wrap">
+                <table aria-label="Daftar purchase order">
+                  <thead>
+                    <tr>
+                      <th>No. PO</th>
+                      <th>Pemasok</th>
+                      <th>Tiba</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="po-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2 id="po-detail-title">Rincian PO</h2>
+                <span class="panel-caption">Pilih PO di tabel</span>
+              </div>
+              <div class="detail-grid" id="po-detail-grid"></div>
+              <div class="table-wrap">
+                <table aria-label="Item purchase order">
+                  <thead>
+                    <tr>
+                      <th>Bahan</th>
+                      <th>Jumlah</th>
+                      <th>Harga</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody id="po-items-body"></tbody>
+                </table>
+              </div>
+              <div class="row-actions" id="po-actions">
+                <button type="button" class="button primary small" id="po-approve">Setujui PO</button>
+                <button type="button" class="button secondary small" id="po-cancel">Batalkan PO</button>
+                <button type="button" class="button success small" id="po-receive">Terima Barang</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="module-section" data-section="agent" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Asisten Operasional AI</h2>
+              <p>SmartBakery Assistant menganalisis data SCM dan membuat draf PO dengan pengawasan pengguna.</p>
+            </div>
+            <span class="stage-pill">Tahap 5 — OpenRouter Tool Calling</span>
+          </div>
+
+          <div class="agent-layout">
+            <section class="panel chat-panel">
+              <div class="panel-header">
+                <h2>Percakapan Agent</h2>
+                <span class="panel-caption" id="agent-context" hidden></span>
+              </div>
+              <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+              <div class="chat-loading" id="chat-loading" role="status" hidden>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                Assistant sedang memeriksa data dan memanggil tools…
+              </div>
+              <form class="chat-form" id="chat-form">
+                <input type="text" id="chat-input" class="input-control" placeholder="Tanyakan sesuatu tentang stok, produksi, atau pemasok…" autocomplete="off" aria-label="Pesan untuk AI Agent" />
+                <button type="submit" class="button primary" id="chat-send">Kirim</button>
+              </form>
+            </section>
+
+            <aside class="agent-side">
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>Prompt Cepat</h2>
+                  <span class="panel-caption">Demo</span>
+                </div>
+                <div class="quick-prompts" id="quick-prompts">
+                  <button type="button" class="quick-prompt" data-prompt="Saya akan memproduksi 100 roti untuk dua hari lagi. Periksa kebutuhan bahan baku, lihat stok yang tersedia, bandingkan pemasok, lalu buatkan draf pemesanan untuk bahan yang kurang. Jangan setujui pesanan sebelum saya memeriksanya.">Produksi 100 roti + draf PO</button>
+                  <button type="button" class="quick-prompt" data-prompt="Bahan mana yang stoknya kritis sekarang? Jelaskan statusnya secara singkat.">Cek stok kritis</button>
+                  <button type="button" class="quick-prompt" data-prompt="Tampilkan ringkasan dashboard dan PO yang belum selesai.">Ringkasan &amp; PO terbuka</button>
+                  <button type="button" class="quick-prompt" data-prompt="Analisis rencana produksi PP-2026-001 dan rekomendasikan pemasok terbaik untuk bahan yang kurang.">Analisis PP-2026-001</button>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <h2>Tools yang Dijalankan</h2>
+                  <span class="panel-caption">Transparansi aksi</span>
+                </div>
+                <div class="tool-trail" id="agent-tools" aria-live="polite"></div>
+              </section>
+
+              <section class="panel agent-result" id="agent-result" aria-live="polite" hidden></section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="module-section" data-section="logs" hidden>
+          <div class="section-intro">
+            <div>
+              <h2>Riwayat Aktivitas</h2>
+              <p>Audit pemanggilan tool oleh AI Agent termasuk argumen, hasil, dan referensi PO.</p>
+            </div>
+            <span class="stage-pill">Tahap 5 — Agent Log</span>
+          </div>
+
+          <div class="toolbar">
+            <select id="logs-status" class="input-control" aria-label="Filter status log">
+              <option value="">Semua status</option>
+              <option value="SUCCESS">SUCCESS</option>
+              <option value="ERROR">ERROR</option>
+            </select>
+            <button type="button" class="button primary" id="logs-refresh">Muat Ulang</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Log Eksekusi Tool</h2>
+              <span class="panel-caption" id="logs-count">0 aktivitas</span>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Log eksekusi tool">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Pemicu</th>
+                    <th>Tool</th>
+                    <th>Argumen</th>
+                    <th>Ringkasan Hasil</th>
+                    <th>Status</th>
+                    <th>PO</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="modal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <h2 id="modal-title">Form</h2>
+          <button type="button" class="modal-close" id="modal-close" aria-label="Tutup form">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <form id="modal-form">
+          <div class="modal-body" id="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="button secondary" id="modal-cancel">Batal</button>
+            <button type="submit" class="button primary" id="modal-submit">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="/js/dashboard.js" defer></script>
+    <script src="/js/inventory.js" defer></script>
+    <script src="/js/suppliers.js" defer></script>
+    <script src="/js/products.js" defer></script>
+    <script src="/js/production.js" defer></script>
+    <script src="/js/procurement.js" defer></script>
+    <script src="/js/agent.js" defer></script>
+    <script src="/js/logs.js" defer></script>
+    <script src="/js/app.js" defer></script>
+  </body>
+</html>
